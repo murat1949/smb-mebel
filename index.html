@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Центр управления — Мебельная компания</title>
+<style>
+  :root {
+    --brown:   #8b4a2a;
+    --brown2:  #723d22;
+    --bg:      #f0f4f8;
+    --white:   #ffffff;
+    --green:   #059669;
+    --green2:  #d1fae5;
+    --orange:  #f59e0b;
+    --orange2: #fef3c7;
+    --red:     #dc2626;
+    --red2:    #fee2e2;
+    --text:    #1e293b;
+    --muted:   #64748b;
+    --border:  #e2e8f0;
+    --card:    #ffffff;
+    --shadow:  0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #c8b8a8;
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .phone-wrap {
+    width: 100%;
+    max-width: 420px;
+    min-height: 100vh;
+    background: var(--bg);
+    position: relative;
+    padding-bottom: 72px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.18);
+  }
+  .header {
+    background: var(--brown);
+    color: white;
+    padding: 16px 16px 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; }
+  .header-logo { display: flex; align-items: center; gap: 8px; }
+  .logo-icon { font-size: 22px; }
+  .logo-text { font-size: 15px; font-weight: 700; }
+  .logo-sub { font-size: 10px; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px; }
+  .live-badge {
+    display: flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,0.15);
+    padding: 4px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .live-dot {
+    width: 7px; height: 7px;
+    background: #4ade80; border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .header-date { margin-top: 8px; font-size: 12px; opacity: 0.65; }
+
+  .nav {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 420px;
+    background: var(--white); border-top: 1px solid var(--border);
+    display: flex; z-index: 100;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
+  }
+  .nav-btn {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    padding: 8px 4px 6px; border: none; background: none;
+    cursor: pointer; font-size: 9px; color: var(--muted); gap: 2px;
+  }
+  .nav-btn .ico { font-size: 18px; }
+  .nav-btn.active { color: var(--brown); }
+  .nav-btn.active .nav-label { font-weight: 600; }
+
+  .screen { display: none; padding: 12px; }
+  .screen.active { display: block; }
+
+  .alert-bar {
+    padding: 10px 14px; border-radius: 10px; margin-bottom: 12px;
+    font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px;
+  }
+  .alert-bar.ok { background: var(--green2); color: var(--green); }
+  .alert-bar.warning { background: var(--orange2); color: #92400e; }
+  .alert-bar.danger { background: var(--red2); color: var(--red); }
+
+  .speedos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .speedo-card {
+    background: var(--card); border-radius: 16px;
+    padding: 12px 8px 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+    display: flex; flex-direction: column; align-items: center;
+    position: relative; overflow: hidden;
+  }
+  .speedo-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--sc, #8b4a2a); border-radius: 16px 16px 0 0;
+  }
+  .speedo-label {
+    font-size: 10px; color: var(--muted); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;
+  }
+  .speedo-svg { width: 110px; height: 62px; }
+  .speedo-value { font-size: 15px; font-weight: 900; color: var(--text); margin-top: 1px; text-align:center; }
+  .speedo-pct { font-size: 12px; font-weight: 800; margin-top: 1px; text-align:center; }
+  .speedo-sub { font-size: 9px; color: var(--muted); margin-top: 2px; text-align: center; }
+
+  .today-strip { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .today-item {
+    background: linear-gradient(135deg, #5c2e12, #8b4a2a);
+    border-radius: 12px; padding: 10px 6px; text-align: center; color: white;
+    box-shadow: 0 2px 8px rgba(139,74,42,0.25);
+  }
+  .today-val { font-size: 17px; font-weight: 900; }
+  .today-lbl { font-size: 9px; opacity: 0.75; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.3px; }
+
+  .card {
+    background: var(--card); border-radius: 12px;
+    padding: 14px; box-shadow: var(--shadow); margin-bottom: 10px;
+  }
+  .card-title {
+    font-size: 12px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;
+  }
+
+  .kpi-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .kpi-row:last-child { border-bottom: none; }
+  .kpi-label { font-size: 13px; color: var(--text); }
+  .kpi-val { font-size: 15px; font-weight: 700; color: var(--text); }
+  .kpi-val.green { color: var(--green); }
+  .kpi-val.red { color: var(--red); }
+  .kpi-val.orange { color: var(--orange); }
+
+  .section-title {
+    font-size: 13px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin: 16px 2px 8px;
+  }
+
+  /* ФОРМЫ */
+  .form-group { margin-bottom: 12px; }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
+  input[type="number"], input[type="text"], input[type="date"], select, textarea {
+    width: 100%; padding: 10px 12px; font-size: 15px; color: var(--text);
+    background: var(--white); border: 1.5px solid var(--border); border-radius: 10px;
+    -webkit-appearance: none;
+  }
+  input:focus, select:focus { outline: none; border-color: var(--brown); }
+  .btn {
+    width: 100%; padding: 13px; font-size: 15px; font-weight: 700;
+    border: none; border-radius: 10px; cursor: pointer; margin-top: 4px;
+  }
+  .btn-primary { background: var(--brown); color: white; }
+  .btn-primary:active { background: var(--brown2); }
+
+  /* AI блок */
+  .ai-block {
+    background: linear-gradient(135deg, #5c2e12, #8b4a2a);
+    border-radius: 14px; padding: 14px; color: white; margin-bottom: 10px;
+  }
+  .ai-label { font-size: 10px; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .ai-text { font-size: 14px; font-weight: 600; line-height: 1.5; }
+
+  .no-data { text-align: center; color: var(--muted); font-size: 13px; padding: 20px 0; }
+
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: 80px; background: #1e293b; color: white;
+    padding: 10px 20px; border-radius: 20px; font-size: 13px;
+    display: none; z-index: 999; white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .toast.show { display: block; }
+
+  .refresh-btn {
+    background: none; border: 1.5px solid rgba(255,255,255,0.35);
+    color: white; border-radius: 8px; padding: 5px 10px;
+    font-size: 11px; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<div class="phone-wrap">
+
+  <!-- ШАПКА -->
+  <div class="header">
+    <div class="header-top">
+      <div class="header-logo">
+        <div class="logo-icon">🪑</div>
+        <div>
+          <div class="logo-text">МебельПро</div>
+          <div class="logo-sub">Центр управления</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="refresh-btn" onclick="loadDashboard()">↻ Обновить</button>
+        <div class="live-badge"><div class="live-dot"></div> LIVE</div>
+      </div>
+    </div>
+    <div class="header-date" id="headerDate"></div>
+  </div>
+
+  <!-- ДАШБОРД -->
+  <div class="screen active" id="screen-dashboard">
+    <div style="height:12px"></div>
+    <div id="alertBar" class="alert-bar ok">⏳ Загружаем данные...</div>
+
+    <div class="speedos">
+      <div class="speedo-card" style="--sc:#8b4a2a">
+        <div class="speedo-label">📦 Продажи</div>
+        <svg class="speedo-svg" viewBox="0 0 110 62" id="svg-sales">
+          <path d="M10,55 A45,45 0 0,1 100,55" fill="none" stroke="#e2e8f0" stroke-width="10" stroke-linecap="round"/>
+          <path d="M10,55 A45,45 0 0,1 100,55" fill="none" stroke="#8b4a2a" stroke-width="10" stroke-linecap="round" stroke-dasharray="141.4" stroke-dashoffset="141.4" id="arc-sales" style="transition:stroke-dashoffset 1s ease"/>
+          <text x="55" y="52" text-anchor="middle" font-size="16" font-weight="900" fill="#1e293b" id="val-sales">—</text>
+        </svg>
+        <div class="speedo-sub">выполнение плана</div>
+      </div>
+      <div class="speedo-card" style="--sc:#d97706">
+        <div class="speedo-label">🏭 Производство</div>
+        <svg class="speedo-svg" viewBox="0 0 110 62" id="svg-prod">
+          <path d="M10,55 A45,45 0 0,1 100,55" fill="none" stroke="#e2e8f0" stroke-width="10" stroke-linecap="round"/>
+          <path d="M10,55 A45,45 0 0,1 100,55" fill="none" stroke="#d97706" stroke-width="10" stroke-linecap="round" stroke-dasharray="141.4" stroke-dashoffset="141.4" id="arc-prod" style="transition:stroke-dashoffset 1s ease"/>
+          <text x="55" y="52" text-anchor="middle" font-size="16" font-weight="900" fill="#1e293b" id="val-prod">—</text>
+        </svg>
+        <div class="speedo-sub">загрузка цеха</div>
+      </div>
+      <div class="speedo-card" style="--sc:#dc2626">
+        <div class="speedo-label">⏰ Просрочки</div>
+        <svg class="speedo-svg" viewBox="0 0 110 62">
+          <path d="M10,55 A45,45 0 0,1 100,55" fill="none" stroke="#e2e8f0" stroke-width="10" stroke-linecap="round"/>
+          <path d="M10,55 A45,45 0 0,1 100,55" fill="none" stroke="#dc2626" stroke-width="10" stroke-linecap="round" stroke-dasharray="141.4" stroke-dashoffset="141.4" id="arc-delay" style="transition:stroke-dashoffset 1s ease"/>
+          <text x="55" y="52" text-anchor="middle" font-size="16" font-weight="900" fill="#1e293b" id="val-delay">—</text>
+        </svg>
+        <div class="speedo-sub">контроль сроков</div>
+      </div>
+      <div class="speedo-card" style="--sc:#059669">
+        <div class="speedo-label">💰 Остаток</div>
+        <svg class="speedo-svg" viewBox="0 0 110 62">
+          <path d="M10,55 A45,45 0 0,1 100,55" fill="none" stroke="#e2e8f0" stroke-width="10" stroke-linecap="round"/>
+          <path d="M10,55 A45,45 0 0,1 100,55" fill="none" stroke="#059669" stroke-width="10" stroke-linecap="round" stroke-dasharray="141.4" stroke-dashoffset="141.4" id="arc-cash" style="transition:stroke-dashoffset 1s ease"/>
+          <text x="55" y="52" text-anchor="middle" font-size="13" font-weight="900" fill="#1e293b" id="val-cash">—</text>
+        </svg>
+        <div class="speedo-sub">на счёте, млн ₸</div>
+      </div>
+    </div>
+
+    <div class="today-strip" id="todayStrip">
+      <div class="today-item"><div class="today-val" id="t-leads">—</div><div class="today-lbl">Заявки</div></div>
+      <div class="today-item"><div class="today-val" id="t-orders">—</div><div class="today-lbl">В работе</div></div>
+      <div class="today-item"><div class="today-val" id="t-sales">—</div><div class="today-lbl">Продаж</div></div>
+    </div>
+
+    <div class="ai-block">
+      <div class="ai-label">🤖 AI-директор</div>
+      <div class="ai-text" id="aiText">Загружаем анализ...</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Финансы</div>
+      <div class="kpi-row"><span class="kpi-label">Остаток на счетах</span><span class="kpi-val green" id="fin-cash">—</span></div>
+      <div class="kpi-row"><span class="kpi-label">Дебиторка</span><span class="kpi-val orange" id="fin-recv">—</span></div>
+      <div class="kpi-row"><span class="kpi-label">Кредиторка</span><span class="kpi-val red" id="fin-pay">—</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Склад</div>
+      <div class="kpi-row"><span class="kpi-label">Материалы</span><span class="kpi-val" id="wh-mat">—</span></div>
+      <div class="kpi-row"><span class="kpi-label">Готовая продукция</span><span class="kpi-val" id="wh-ready">—</span></div>
+      <div class="kpi-row"><span class="kpi-label">Дефицит</span><span class="kpi-val red" id="wh-def">—</span></div>
+    </div>
+  </div>
+
+  <!-- ПРОДАЖИ -->
+  <div class="screen" id="screen-sales">
+    <div style="height:12px"></div>
+    <div class="section-title">Ввод данных — Продажи</div>
+    <div class="card">
+      <div class="form-group"><label>Дата</label><input type="date" id="s-date"></div>
+      <div class="form-group"><label>Количество заявок</label><input type="number" id="s-leads" placeholder="Например: 15"></div>
+      <div class="form-group"><label>Количество КП</label><input type="number" id="s-kp" placeholder="Например: 8"></div>
+      <div class="form-group"><label>Количество продаж</label><input type="number" id="s-sales" placeholder="Например: 3"></div>
+      <div class="form-group"><label>Сумма продаж, ₸</label><input type="number" id="s-amount" placeholder="Например: 2500000"></div>
+      <div class="form-group"><label>Ответственный</label><input type="text" id="s-manager" placeholder="Имя менеджера"></div>
+      <button class="btn btn-primary" onclick="submitSales()">Сохранить</button>
+    </div>
+  </div>
+
+  <!-- ПРОИЗВОДСТВО -->
+  <div class="screen" id="screen-prod">
+    <div style="height:12px"></div>
+    <div class="section-title">Ввод данных — Производство</div>
+    <div class="card">
+      <div class="form-group"><label>Дата</label><input type="date" id="p-date"></div>
+      <div class="form-group"><label>Заказов в работе</label><input type="number" id="p-orders" placeholder="Например: 24"></div>
+      <div class="form-group"><label>Загрузка цеха, %</label><input type="number" id="p-load" placeholder="Например: 75" min="0" max="100"></div>
+      <div class="form-group"><label>Просрочки, %</label><input type="number" id="p-delay" placeholder="Например: 12" min="0" max="100"></div>
+      <div class="form-group"><label>Ответственный</label><input type="text" id="p-resp" placeholder="Начальник производства"></div>
+      <button class="btn btn-primary" onclick="submitProd()">Сохранить</button>
+    </div>
+  </div>
+
+  <!-- ФИНАНСЫ -->
+  <div class="screen" id="screen-fin">
+    <div style="height:12px"></div>
+    <div class="section-title">Ввод данных — Финансы</div>
+    <div class="card">
+      <div class="form-group"><label>Дата</label><input type="date" id="f-date"></div>
+      <div class="form-group"><label>Остаток на счетах, ₸</label><input type="number" id="f-cash" placeholder="Например: 8500000"></div>
+      <div class="form-group"><label>Дебиторка, ₸</label><input type="number" id="f-recv" placeholder="Например: 3200000"></div>
+      <div class="form-group"><label>Кредиторка, ₸</label><input type="number" id="f-pay" placeholder="Например: 1800000"></div>
+      <div class="form-group"><label>Ответственный</label><input type="text" id="f-resp" placeholder="Финансист / бухгалтер"></div>
+      <button class="btn btn-primary" onclick="submitFin()">Сохранить</button>
+    </div>
+
+    <div class="section-title">Склад</div>
+    <div class="card">
+      <div class="form-group"><label>Дата</label><input type="date" id="w-date"></div>
+      <div class="form-group"><label>Материалов на складе, ед.</label><input type="number" id="w-mat" placeholder="Например: 340"></div>
+      <div class="form-group"><label>Готовой продукции, ед.</label><input type="number" id="w-ready" placeholder="Например: 28"></div>
+      <div class="form-group"><label>Дефицит (что заканчивается)</label><input type="text" id="w-def" placeholder="Например: Фанера, лак"></div>
+      <div class="form-group"><label>Ответственный</label><input type="text" id="w-resp" placeholder="Кладовщик"></div>
+      <button class="btn btn-primary" onclick="submitWarehouse()">Сохранить</button>
+    </div>
+  </div>
+
+  <!-- НИЖНЯЯ НАВИГАЦИЯ -->
+  <nav class="nav">
+    <button class="nav-btn active" onclick="showScreen('dashboard',this)">
+      <span class="ico">📊</span><span class="nav-label">Дашборд</span>
+    </button>
+    <button class="nav-btn" onclick="showScreen('sales',this)">
+      <span class="ico">📦</span><span class="nav-label">Продажи</span>
+    </button>
+    <button class="nav-btn" onclick="showScreen('prod',this)">
+      <span class="ico">🏭</span><span class="nav-label">Производство</span>
+    </button>
+    <button class="nav-btn" onclick="showScreen('fin',this)">
+      <span class="ico">💰</span><span class="nav-label">Финансы</span>
+    </button>
+  </nav>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+const SB_URL = 'https://ilfxyvsqintvjbifqxvr.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsZnh5dnNxaW50dmpiaWZxeHZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NDg4NjYsImV4cCI6MjA5ODEyNDg2Nn0.GxeTD1GlBDmmVsoCgXZPKnp02GDL42ncrWsjegN2B6o';
+
+async function sbFetch(table, query='') {
+  const r = await fetch(`${SB_URL}/rest/v1/${table}${query}`, {
+    headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' }
+  });
+  return r.ok ? r.json() : null;
+}
+
+async function sbInsert(table, data) {
+  const r = await fetch(`${SB_URL}/rest/v1/${table}`, {
+    method: 'POST',
+    headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+    body: JSON.stringify(data)
+  });
+  return r.ok;
+}
+
+function showScreen(name, btn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'dashboard') loadDashboard();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function setArc(id, pct) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const offset = 141.4 - (141.4 * Math.min(100, Math.max(0, pct)) / 100);
+  el.style.strokeDashoffset = offset;
+}
+
+function fmt(n) {
+  if (!n) return '—';
+  if (n >= 1000000) return (n/1000000).toFixed(1) + ' млн';
+  if (n >= 1000) return (n/1000).toFixed(0) + ' тыс';
+  return n.toLocaleString('ru-RU');
+}
+
+async function loadDashboard() {
+  try {
+    const [sales, prod, fin, wh, settings] = await Promise.all([
+      sbFetch('mebel_sales', '?select=*&order=created_at.desc&limit=1'),
+      sbFetch('mebel_production', '?select=*&order=created_at.desc&limit=1'),
+      sbFetch('mebel_finance', '?select=*&order=created_at.desc&limit=1'),
+      sbFetch('mebel_warehouse', '?select=*&order=created_at.desc&limit=1'),
+      sbFetch('mebel_settings', '?select=*')
+    ]);
+
+    const s = sales && sales[0];
+    const p = prod && prod[0];
+    const f = fin && fin[0];
+    const w = wh && wh[0];
+
+    const cfg = {};
+    if (settings) settings.forEach(r => cfg[r.param_key] = parseFloat(r.param_value));
+
+    const salesPlan = cfg.sales_plan || 10000000;
+    const loadMin = cfg.load_min || 70;
+    const delayMax = cfg.delay_max || 20;
+    const cashMin = cfg.cash_min || 5000000;
+
+    // Продажи %
+    const salesPct = s ? Math.round((s.sales_amount / salesPlan) * 100) : 0;
+    document.getElementById('val-sales').textContent = salesPct + '%';
+    setArc('arc-sales', salesPct);
+    document.getElementById('t-leads').textContent = s ? s.leads_count || '—' : '—';
+    document.getElementById('t-sales').textContent = s ? s.sales_count || '—' : '—';
+
+    // Производство
+    const loadPct = p ? p.load_percent || 0 : 0;
+    document.getElementById('val-prod').textContent = loadPct + '%';
+    setArc('arc-prod', loadPct);
+    document.getElementById('t-orders').textContent = p ? p.orders_in_work || '—' : '—';
+
+    // Просрочки
+    const delayPct = p ? p.delay_percent || 0 : 0;
+    document.getElementById('val-delay').textContent = delayPct + '%';
+    setArc('arc-delay', delayPct);
+
+    // Финансы
+    const cash = f ? f.cash_balance || 0 : 0;
+    const cashPct = Math.round((cash / (cashMin * 2)) * 100);
+    document.getElementById('val-cash').textContent = fmt(cash);
+    setArc('arc-cash', cashPct);
+    document.getElementById('fin-cash').textContent = f ? fmt(f.cash_balance) + ' ₸' : '—';
+    document.getElementById('fin-recv').textContent = f ? fmt(f.receivables) + ' ₸' : '—';
+    document.getElementById('fin-pay').textContent = f ? fmt(f.payables) + ' ₸' : '—';
+
+    // Склад
+    document.getElementById('wh-mat').textContent = w ? (w.materials_stock || '—') + ' ед.' : '—';
+    document.getElementById('wh-ready').textContent = w ? (w.ready_goods || '—') + ' ед.' : '—';
+    document.getElementById('wh-def').textContent = w ? (w.deficit_items || 'Нет') : '—';
+
+    // Статус
+    const alertBar = document.getElementById('alertBar');
+    let status = 'ok', statusText = '🟢 Бизнес под контролем';
+    if (delayPct > delayMax || salesPct < 50 || cash < cashMin) {
+      status = 'danger'; statusText = '🔴 Требуется вмешательство';
+    } else if (loadPct < loadMin || salesPct < 70) {
+      status = 'warning'; statusText = '🟡 Есть зоны контроля';
+    }
+    alertBar.className = 'alert-bar ' + status;
+    alertBar.textContent = statusText;
+
+    // AI
+    let ai = 'Все показатели в норме. Поддерживайте текущий темп.';
+    if (delayPct > delayMax) ai = 'Критично: просрочки ' + delayPct + '%. Срочно разберите узкие места в цехе.';
+    else if (salesPct < 50) ai = 'Продажи ниже 50% плана. Усильте работу с заявками и ускорьте КП.';
+    else if (cash < cashMin) ai = 'Остаток на счёте ниже минимума. Ускорьте взыскание дебиторки.';
+    else if (loadPct < loadMin) ai = 'Производство загружено менее ' + loadMin + '%. Проверьте входящие заказы.';
+    document.getElementById('aiText').textContent = ai;
+
+  } catch(e) {
+    showToast('Ошибка загрузки данных');
+  }
+}
+
+async function submitSales() {
+  const ok = await sbInsert('mebel_sales', {
+    sale_date: document.getElementById('s-date').value || new Date().toISOString().split('T')[0],
+    leads_count: parseInt(document.getElementById('s-leads').value) || 0,
+    kp_count: parseInt(document.getElementById('s-kp').value) || 0,
+    sales_count: parseInt(document.getElementById('s-sales').value) || 0,
+    sales_amount: parseFloat(document.getElementById('s-amount').value) || 0,
+    manager: document.getElementById('s-manager').value
+  });
+  showToast(ok ? '✓ Данные продаж сохранены' : '❌ Ошибка сохранения');
+  if (ok) ['s-leads','s-kp','s-sales','s-amount','s-manager'].forEach(id => document.getElementById(id).value='');
+}
+
+async function submitProd() {
+  const ok = await sbInsert('mebel_production', {
+    prod_date: document.getElementById('p-date').value || new Date().toISOString().split('T')[0],
+    orders_in_work: parseInt(document.getElementById('p-orders').value) || 0,
+    load_percent: parseInt(document.getElementById('p-load').value) || 0,
+    delay_percent: parseInt(document.getElementById('p-delay').value) || 0,
+    responsible: document.getElementById('p-resp').value
+  });
+  showToast(ok ? '✓ Данные производства сохранены' : '❌ Ошибка сохранения');
+  if (ok) ['p-orders','p-load','p-delay','p-resp'].forEach(id => document.getElementById(id).value='');
+}
+
+async function submitFin() {
+  const ok = await sbInsert('mebel_finance', {
+    fin_date: document.getElementById('f-date').value || new Date().toISOString().split('T')[0],
+    cash_balance: parseFloat(document.getElementById('f-cash').value) || 0,
+    receivables: parseFloat(document.getElementById('f-recv').value) || 0,
+    payables: parseFloat(document.getElementById('f-pay').value) || 0,
+    responsible: document.getElementById('f-resp').value
+  });
+  showToast(ok ? '✓ Финансы сохранены' : '❌ Ошибка сохранения');
+}
+
+async function submitWarehouse() {
+  const ok = await sbInsert('mebel_warehouse', {
+    wh_date: document.getElementById('w-date').value || new Date().toISOString().split('T')[0],
+    materials_stock: parseInt(document.getElementById('w-mat').value) || 0,
+    ready_goods: parseInt(document.getElementById('w-ready').value) || 0,
+    deficit_items: document.getElementById('w-def').value,
+    responsible: document.getElementById('w-resp').value
+  });
+  showToast(ok ? '✓ Склад сохранён' : '❌ Ошибка сохранения');
+  if (ok) ['w-mat','w-ready','w-def','w-resp'].forEach(id => document.getElementById(id).value='');
+}
+
+// Инициализация
+const today = new Date();
+document.getElementById('headerDate').textContent = today.toLocaleDateString('ru-RU', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+['s-date','p-date','f-date','w-date'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.value = today.toISOString().split('T')[0];
+});
+
+loadDashboard();
+setInterval(loadDashboard, 60000);
+</script>
+</body>
+</html>
