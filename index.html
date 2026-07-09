@@ -78,9 +78,9 @@
   .nav-btn {
     flex: 1; display: flex; flex-direction: column; align-items: center;
     padding: 8px 4px 6px; border: none; background: none;
-    cursor: pointer; font-size: 9px; color: var(--muted); gap: 2px;
+    cursor: pointer; font-size: 11px; color: var(--muted); gap: 2px;
   }
-  .nav-btn .ico { font-size: 18px; }
+  .nav-btn .ico { font-size: 22px; }
   .nav-btn.active { color: var(--brown); }
   .nav-btn.active .nav-label { font-weight: 600; }
 
@@ -107,13 +107,13 @@
     background: var(--sc, #8b4a2a); border-radius: 16px 16px 0 0;
   }
   .speedo-label {
-    font-size: 10px; color: var(--muted); font-weight: 700;
+    font-size: 12px; color: var(--muted); font-weight: 700;
     text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;
   }
   .speedo-svg { width: 110px; height: 62px; }
-  .speedo-value { font-size: 15px; font-weight: 900; color: var(--text); margin-top: 1px; text-align:center; }
+  .speedo-value { font-size: 18px; font-weight: 900; color: var(--text); margin-top: 1px; text-align:center; }
   .speedo-pct { font-size: 12px; font-weight: 800; margin-top: 1px; text-align:center; }
-  .speedo-sub { font-size: 9px; color: var(--muted); margin-top: 2px; text-align: center; }
+  .speedo-sub { font-size: 11px; color: var(--muted); margin-top: 2px; text-align: center; }
 
   .today-strip { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
   .today-item {
@@ -121,22 +121,22 @@
     border-radius: 12px; padding: 10px 6px; text-align: center; color: white;
     box-shadow: 0 2px 8px rgba(139,74,42,0.25);
   }
-  .today-val { font-size: 17px; font-weight: 900; }
-  .today-lbl { font-size: 9px; opacity: 0.75; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .today-val { font-size: 20px; font-weight: 900; }
+  .today-lbl { font-size: 11px; opacity: 0.75; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.3px; }
 
   .card {
     background: var(--card); border-radius: 12px;
     padding: 14px; box-shadow: var(--shadow); margin-bottom: 10px;
   }
   .card-title {
-    font-size: 12px; font-weight: 700; color: var(--muted);
+    font-size: 14px; font-weight: 700; color: var(--muted);
     text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;
   }
 
   .kpi-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
   .kpi-row:last-child { border-bottom: none; }
-  .kpi-label { font-size: 13px; color: var(--text); }
-  .kpi-val { font-size: 15px; font-weight: 700; color: var(--text); }
+  .kpi-label { font-size: 15px; color: var(--text); }
+  .kpi-val { font-size: 17px; font-weight: 700; color: var(--text); }
   .kpi-val.green { color: var(--green); }
   .kpi-val.red { color: var(--red); }
   .kpi-val.orange { color: var(--orange); }
@@ -149,7 +149,7 @@
 
   /* ФОРМЫ */
   .form-group { margin-bottom: 12px; }
-  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
+  label { display: block; font-size: 15px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
   input[type="number"], input[type="text"], input[type="date"], select, textarea {
     width: 100%; padding: 10px 12px; font-size: 15px; color: var(--text);
     background: var(--white); border: 1.5px solid var(--border); border-radius: 10px;
@@ -168,8 +168,8 @@
     background: linear-gradient(135deg, #5c2e12, #8b4a2a);
     border-radius: 14px; padding: 14px; color: white; margin-bottom: 10px;
   }
-  .ai-label { font-size: 10px; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-  .ai-text { font-size: 14px; font-weight: 600; line-height: 1.5; }
+  .ai-label { font-size: 12px; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .ai-text { font-size: 16px; font-weight: 600; line-height: 1.5; }
 
   .no-data { text-align: center; color: var(--muted); font-size: 13px; padding: 20px 0; }
 
@@ -193,10 +193,79 @@
     color: white; border-radius: 8px; padding: 5px 10px;
     font-size: 11px; cursor: pointer;
   }
+
+  /* ОБЛОЖКА */
+  .cover {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: linear-gradient(160deg, #5c2e12 0%, #8b4a2a 60%, #a0522d 100%);
+    padding: 40px 24px; text-align: center; color: white;
+  }
+  .cover-icon { font-size: 72px; margin-bottom: 20px; }
+  .cover-title { font-size: 28px; font-weight: 700; margin-bottom: 8px; line-height: 1.3; }
+  .cover-sub { font-size: 15px; opacity: 0.75; margin-bottom: 40px; line-height: 1.6; }
+  .cover-tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 48px; }
+  .cover-tag {
+    background: rgba(255,255,255,0.15); border-radius: 20px;
+    padding: 6px 14px; font-size: 13px; font-weight: 600;
+  }
+  .cover-btn {
+    background: white; color: #8b4a2a; border: none;
+    border-radius: 14px; padding: 16px 40px;
+    font-size: 17px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+  .cover-version { font-size: 11px; opacity: 0.45; margin-top: 24px; }
+
+  /* НАСТРОЙКИ */
+  .settings-group { margin-bottom: 20px; }
+  .settings-group-title {
+    font-size: 11px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 8px; padding-left: 2px;
+  }
+  .setting-row {
+    background: var(--card); border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 8px;
+    box-shadow: var(--shadow);
+  }
+  .setting-label { font-size: 14px; color: var(--text); font-weight: 600; margin-bottom: 6px; }
+  .setting-hint { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .setting-input-row { display: flex; gap: 8px; align-items: center; }
+  .setting-input-row input { flex: 1; }
+  .setting-unit { font-size: 13px; color: var(--muted); white-space: nowrap; }
+  .btn-settings-save { background: var(--brown); color: white; }
+  .btn-settings-save:active { background: var(--brown2); }
+
+  /* КНОПКА НА ГЛАВНУЮ */
+  .back-to-cover {
+    display: flex; align-items: center; justify-content: center;
+    gap: 6px; padding: 10px; color: var(--muted);
+    font-size: 13px; cursor: pointer; border: none;
+    background: none; width: 100%; margin-top: 8px;
+  }
 </style>
 </head>
 <body>
 <div class="phone-wrap">
+
+  <!-- ОБЛОЖКА -->
+  <div id="cover-screen" class="cover">
+    <div class="cover-icon">🪑</div>
+    <div class="cover-title">Центр управления<br>мебельной компанией</div>
+    <div class="cover-sub">Мобильная панель руководителя.<br>Продажи · Производство · Финансы · Склад</div>
+    <div class="cover-tags">
+      <span class="cover-tag">📊 Дашборд в реальном времени</span>
+      <span class="cover-tag">🤖 AI-рекомендации</span>
+      <span class="cover-tag">✈️ Telegram-отчёт</span>
+      <span class="cover-tag">⚙️ Настраиваемые пороги</span>
+    </div>
+    <button class="cover-btn" onclick="hideCover()">Открыть панель →</button>
+    <div class="cover-version">МебельПро · Версия 1.3 · 2026</div>
+  </div>
+
+  <!-- ОСНОВНАЯ ОБОЛОЧКА (скрыта пока обложка) -->
+  <div id="main-app" style="display:none; width:100%;">
 
   <!-- ШАПКА -->
   <div class="header">
@@ -341,6 +410,69 @@
     </div>
   </div>
 
+
+  <!-- НАСТРОЙКИ -->
+  <div class="screen" id="screen-settings">
+    <div style="height:12px"></div>
+    <div class="section-title">⚙️ Настройки порогов KPI</div>
+    <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">Установите критические значения. При превышении — дашборд покажет красный статус.</p>
+
+    <div class="settings-group">
+      <div class="settings-group-title">📦 Продажи</div>
+      <div class="setting-row">
+        <div class="setting-label">План продаж в месяц</div>
+        <div class="setting-hint">Красная зона — если выполнено менее 50%</div>
+        <div class="setting-input-row">
+          <input type="number" id="cfg-sales-plan" placeholder="10000000">
+          <span class="setting-unit">₸</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-group-title">🏭 Производство</div>
+      <div class="setting-row">
+        <div class="setting-label">Минимальная загрузка цеха</div>
+        <div class="setting-hint">Ниже этого значения — предупреждение</div>
+        <div class="setting-input-row">
+          <input type="number" id="cfg-load-min" placeholder="70" min="0" max="100">
+          <span class="setting-unit">%</span>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">Максимум просрочек</div>
+        <div class="setting-hint">Выше этого значения — красный статус</div>
+        <div class="setting-input-row">
+          <input type="number" id="cfg-delay-max" placeholder="20" min="0" max="100">
+          <span class="setting-unit">%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-group-title">💰 Финансы</div>
+      <div class="setting-row">
+        <div class="setting-label">Минимальный остаток на счёте</div>
+        <div class="setting-hint">Ниже этого — критическое предупреждение</div>
+        <div class="setting-input-row">
+          <input type="number" id="cfg-cash-min" placeholder="5000000">
+          <span class="setting-unit">₸</span>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">Максимальная дебиторка</div>
+        <div class="setting-hint">Выше этого — сигнал о проблеме с оплатами</div>
+        <div class="setting-input-row">
+          <input type="number" id="cfg-recv-max" placeholder="15000000">
+          <span class="setting-unit">₸</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-settings-save" onclick="saveSettings()">💾 Сохранить настройки</button>
+    <button class="back-to-cover" onclick="showCover()">← На обложку</button>
+  </div>
+
   <!-- НИЖНЯЯ НАВИГАЦИЯ -->
   <nav class="nav">
     <button class="nav-btn active" onclick="showScreen('dashboard',this)">
@@ -355,9 +487,13 @@
     <button class="nav-btn" onclick="showScreen('fin',this)">
       <span class="ico">💰</span><span class="nav-label">Финансы</span>
     </button>
+    <button class="nav-btn" onclick="showScreen('settings',this)">
+      <span class="ico">⚙️</span><span class="nav-label">Настройки</span>
+    </button>
   </nav>
 
   <div class="toast" id="toast"></div>
+  </div><!-- /main-app -->
 </div>
 
 <script>
@@ -365,6 +501,58 @@ const SB_URL = 'https://ilfxyvsqintvjbifqxvr.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsZnh5dnNxaW50dmpiaWZxeHZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NDg4NjYsImV4cCI6MjA5ODEyNDg2Nn0.GxeTD1GlBDmmVsoCgXZPKnp02GDL42ncrWsjegN2B6o';
 const TG_TOKEN = '8823713676:AAEyqQunT6UwcvXhPrI1uNWMUuAZJzTmM4U';
 const TG_CHAT  = '843682379';
+
+
+function hideCover() {
+  document.getElementById('cover-screen').style.display = 'none';
+  document.getElementById('main-app').style.display = 'block';
+  loadDashboard();
+}
+
+function showCover() {
+  document.getElementById('cover-screen').style.display = 'flex';
+  document.getElementById('main-app').style.display = 'none';
+}
+
+async function saveSettings() {
+  const settings = [
+    { param_key: 'sales_plan', param_value: document.getElementById('cfg-sales-plan').value || '10000000', label: 'План продаж, ₸' },
+    { param_key: 'load_min',   param_value: document.getElementById('cfg-load-min').value || '70',        label: 'Минимальная загрузка, %' },
+    { param_key: 'delay_max',  param_value: document.getElementById('cfg-delay-max').value || '20',       label: 'Максимум просрочек, %' },
+    { param_key: 'cash_min',   param_value: document.getElementById('cfg-cash-min').value || '5000000',   label: 'Минимальный остаток, ₸' },
+    { param_key: 'recv_max',   param_value: document.getElementById('cfg-recv-max').value || '15000000',  label: 'Максимальная дебиторка, ₸' },
+  ];
+
+  let ok = true;
+  for (const s of settings) {
+    const r = await fetch(`${SB_URL}/rest/v1/mebel_settings?param_key=eq.${s.param_key}`, {
+      method: 'PATCH',
+      headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      body: JSON.stringify({ param_value: s.param_value })
+    });
+    if (!r.ok) {
+      await fetch(`${SB_URL}/rest/v1/mebel_settings`, {
+        method: 'POST',
+        headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify(s)
+      });
+    }
+  }
+  showToast('✓ Настройки сохранены');
+  setTimeout(() => { showScreen('dashboard', document.querySelector('.nav-btn')); loadDashboard(); }, 800);
+}
+
+async function loadSettings() {
+  const data = await sbFetch('mebel_settings', '?select=*');
+  if (!data) return;
+  const cfg = {};
+  data.forEach(r => cfg[r.param_key] = r.param_value);
+  if (cfg.sales_plan) document.getElementById('cfg-sales-plan').value = cfg.sales_plan;
+  if (cfg.load_min)   document.getElementById('cfg-load-min').value   = cfg.load_min;
+  if (cfg.delay_max)  document.getElementById('cfg-delay-max').value  = cfg.delay_max;
+  if (cfg.cash_min)   document.getElementById('cfg-cash-min').value   = cfg.cash_min;
+  if (cfg.recv_max)   document.getElementById('cfg-recv-max').value   = cfg.recv_max;
+}
 
 async function sendTelegram(msg) {
   try {
@@ -394,6 +582,7 @@ async function sbInsert(table, data) {
 }
 
 function showScreen(name, btn) {
+  if (name === 'settings') loadSettings();
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('screen-' + name).classList.add('active');
