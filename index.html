@@ -355,6 +355,18 @@
 <script>
 const SB_URL = 'https://ilfxyvsqintvjbifqxvr.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsZnh5dnNxaW50dmpiaWZxeHZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NDg4NjYsImV4cCI6MjA5ODEyNDg2Nn0.GxeTD1GlBDmmVsoCgXZPKnp02GDL42ncrWsjegN2B6o';
+const TG_TOKEN = '8823713676:AAEyqQunT6UwcvXhPrI1uNWMUuAZJzTmM4U';
+const TG_CHAT  = '843682379';
+
+async function sendTelegram(msg) {
+  try {
+    await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: TG_CHAT, text: msg, parse_mode: 'HTML' })
+    });
+  } catch(e) { console.log('TG error', e); }
+}
 
 async function sbFetch(table, query='') {
   const r = await fetch(`${SB_URL}/rest/v1/${table}${query}`, {
@@ -465,6 +477,22 @@ async function loadDashboard() {
       status = 'warning'; statusText = '🟡 Есть зоны контроля';
     }
     alertBar.className = 'alert-bar ' + status;
+    // Telegram alert
+    const now = new Date();
+    const lastAlert = parseInt(localStorage.getItem('lastTgAlert') || 0);
+    if (status === 'danger' && (now - lastAlert) > 3600000) {
+      const msgs = [];
+      if (delayPct > delayMax) msgs.push(`⏰ Просрочки: ${delayPct}% (норма < ${delayMax}%)`);
+      if (salesPct < 50) msgs.push(`📦 Продажи: ${salesPct}% от плана`);
+      if (cash < cashMin) msgs.push(`💰 Остаток на счёте ниже минимума: ${fmt(cash)} ₸`);
+      const text = `🔴 <b>МебельПро — Требуется вмешательство!</b>
+
+${msgs.join('\n')}
+
+🕐 ${now.toLocaleString('ru-RU')}"`;
+      sendTelegram(text);
+      localStorage.setItem('lastTgAlert', now.getTime());
+    }
     alertBar.textContent = statusText;
 
     // AI
