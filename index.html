@@ -173,6 +173,12 @@
 
   .no-data { text-align: center; color: var(--muted); font-size: 13px; padding: 20px 0; }
 
+  .btn-tg {
+    width: 100%; padding: 13px; font-size: 15px; font-weight: 700;
+    border: none; border-radius: 10px; cursor: pointer; margin-top: 4px;
+    background: #229ED9; color: white;
+  }
+  .btn-tg:active { background: #1a7fb3; }
   .toast {
     position: fixed; left: 50%; transform: translateX(-50%);
     bottom: 80px; background: #1e293b; color: white;
@@ -278,6 +284,8 @@
       <div class="kpi-row"><span class="kpi-label">Готовая продукция</span><span class="kpi-val" id="wh-ready">—</span></div>
       <div class="kpi-row"><span class="kpi-label">Дефицит</span><span class="kpi-val red" id="wh-def">—</span></div>
     </div>
+
+    <button class="btn btn-tg" onclick="sendManualReport()">✈️ Отправить отчёт в Telegram</button>
   </div>
 
   <!-- ПРОДАЖИ -->
@@ -360,12 +368,13 @@ const TG_CHAT  = '843682379';
 
 async function sendTelegram(msg) {
   try {
-    await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+    const r = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chat_id: TG_CHAT, text: msg, parse_mode: 'HTML' })
     });
-  } catch(e) { console.log('TG error', e); }
+    return r.ok;
+  } catch(e) { console.log('TG error', e); return false; }
 }
 
 async function sbFetch(table, query='') {
@@ -411,6 +420,39 @@ function fmt(n) {
   if (n >= 1000000) return (n/1000000).toFixed(1) + ' млн';
   if (n >= 1000) return (n/1000).toFixed(0) + ' тыс';
   return n.toLocaleString('ru-RU');
+}
+
+async function sendManualReport() {
+  const btn = document.querySelector('.btn-tg');
+  btn.textContent = '⏳ Отправляем...';
+  btn.disabled = true;
+
+  const sales  = document.getElementById('val-sales').textContent;
+  const prod   = document.getElementById('val-prod').textContent;
+  const delay  = document.getElementById('val-delay').textContent;
+  const cash   = document.getElementById('fin-cash').textContent;
+  const recv   = document.getElementById('fin-recv').textContent;
+  const status = document.getElementById('alertBar').textContent;
+  const ai     = document.getElementById('aiText').textContent;
+  const now    = new Date().toLocaleString('ru-RU');
+
+  const text = `📊 <b>МебельПро — Отчёт руководителя</b>
+
+📦 Продажи: ${sales}
+🏭 Производство: ${prod}
+⏰ Просрочки: ${delay}
+💰 Остаток: ${cash}
+📉 Дебиторка: ${recv}
+
+Статус: ${status}
+🤖 AI: ${ai}
+
+🕐 ${now}`;
+
+  const ok = await sendTelegram(text);
+  showToast(ok !== false ? '✓ Отчёт отправлен в Telegram' : '❌ Ошибка отправки');
+  btn.textContent = '✈️ Отправить отчёт в Telegram';
+  btn.disabled = false;
 }
 
 async function loadDashboard() {
@@ -477,22 +519,6 @@ async function loadDashboard() {
       status = 'warning'; statusText = '🟡 Есть зоны контроля';
     }
     alertBar.className = 'alert-bar ' + status;
-    // Telegram alert
-    const now = new Date();
-    const lastAlert = parseInt(localStorage.getItem('lastTgAlert') || 0);
-    if (status === 'danger' && (now - lastAlert) > 3600000) {
-      const msgs = [];
-      if (delayPct > delayMax) msgs.push(`⏰ Просрочки: ${delayPct}% (норма < ${delayMax}%)`);
-      if (salesPct < 50) msgs.push(`📦 Продажи: ${salesPct}% от плана`);
-      if (cash < cashMin) msgs.push(`💰 Остаток на счёте ниже минимума: ${fmt(cash)} ₸`);
-      const text = `🔴 <b>МебельПро — Требуется вмешательство!</b>
-
-${msgs.join('\n')}
-
-🕐 ${now.toLocaleString('ru-RU')}"`;
-      sendTelegram(text);
-      localStorage.setItem('lastTgAlert', now.getTime());
-    }
     alertBar.textContent = statusText;
 
     // AI
